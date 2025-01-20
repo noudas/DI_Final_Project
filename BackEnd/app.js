@@ -1,9 +1,7 @@
-// app.js
-
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('./connection/db');
 const cors = require('cors');
+const { connectToDatabase } = require('./connection/db');
 
 const port = 3000;
 const app = express();
@@ -23,15 +21,17 @@ app.use('/api/workers', workerRoutes);
 
 // Error Handling
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 // Connect to MongoDB before starting the server
-require('./connection/db').connectToDatabase().then(() => {
-    app.listen(port, function () {
-        console.log("Server is listening at port:" + port);
-    });
-}).catch(console.error);
+connectToDatabase().then(() => {
+  app.listen(port, function () {
+    console.log("Server is listening at port:" + port);
+  });
+}).catch((error) => {
+  console.error("Failed to start server:", error);
+});
 
 module.exports = app;
