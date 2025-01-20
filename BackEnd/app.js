@@ -3,11 +3,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('./connection/db');
+const cors = require('cors');
 
 const port = 3000;
 const app = express();
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
