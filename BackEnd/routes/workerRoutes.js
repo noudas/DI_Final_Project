@@ -1,12 +1,17 @@
 // src/routes/workerRoutes.js
+
 const express = require('express');
 const router = express.Router();
-const workerController = require('../controllers/workerController');
+const { client } = require('../connection/db');
+const { ObjectId } = require('mongodb');
 
 router.post('/register', async (req, res) => {
     try {
-        const newWorker = await workerController.createWorker(req.body);
-        res.status(201).json(newWorker);
+        const db = client.db("DIFinalProject");
+        const collection = db.collection("workers");
+        
+        const result = await collection.insertOne(req.body);
+        res.status(201).json({ id: result.insertedId });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -14,7 +19,10 @@ router.post('/register', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const worker = await workerController.getWorkerById(req.params.id);
+        const db = client.db("DIFinalProject");
+        const collection = db.collection("workers");
+        
+        const worker = await collection.findOne({ _id: new ObjectId(req.params.id) });
         if (!worker) {
             return res.status(404).json({ message: 'Worker not found' });
         }
@@ -26,7 +34,10 @@ router.get('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const workers = await workerController.getAllWorkers();
+        const db = client.db("DIFinalProject");
+        const collection = db.collection("workers");
+        
+        const workers = await collection.find().toArray();
         res.json(workers);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -35,8 +46,17 @@ router.get('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
-        const updatedWorker = await workerController.updateWorker(req.params.id, req.body);
-        res.json(updatedWorker);
+        const db = client.db("DIFinalProject");
+        const collection = db.collection("workers");
+        
+        const result = await collection.updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $set: req.body }
+        );
+        if (result.modifiedCount === 0) {
+            throw new Error('Worker not updated');
+        }
+        res.json({ message: 'Worker updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -44,7 +64,13 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        await workerController.deleteWorker(req.params.id);
+        const db = client.db("DIFinalProject");
+        const collection = db.collection("workers");
+        
+        const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
+        if (result.deletedCount === 0) {
+            throw new Error('Worker not found');
+        }
         res.status(204).json({ message: 'Worker deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });

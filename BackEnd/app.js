@@ -27,8 +27,11 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-app.listen(port, function () {
-    console.log("Server is listening at port:" + port);
-});
+// Connect to MongoDB before starting the server
+require('./connection/db').connectToDatabase().then(() => {
+    app.listen(port, function () {
+        console.log("Server is listening at port:" + port);
+    });
+}).catch(console.error);
 
 module.exports = app;
