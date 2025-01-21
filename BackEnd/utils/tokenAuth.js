@@ -81,8 +81,6 @@ const verifyToken = async (token, collectionType) => {
     }
 };
 
-
-
 module.exports = {
     hashPassword,
     comparePassword,
