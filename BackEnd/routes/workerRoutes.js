@@ -77,9 +77,10 @@ router.post('/logout', async (req, res) => {
             return res.status(400).json({ error: 'No token provided' });
         }
 
-        const payload = verifyToken(token);
+        // Pass 'worker' as the collectionType
+        const payload = await verifyToken(token, 'worker');
         const db = client.db("DIFinalProject");
-        const collection = db.collection("users");
+        const collection = db.collection("workers");
 
         // Increment the tokenVersion in the database
         await collection.updateOne(
@@ -93,6 +94,7 @@ router.post('/logout', async (req, res) => {
         res.status(401).json({ error: 'Invalid or expired token' });
     }
 });
+
 
 // **Other Routes**
 router.get('/:id', async (req, res) => {

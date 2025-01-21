@@ -50,30 +50,33 @@ function generateToken(payload) {
  * throws {Error} - Throws an error if the token is invalid, expired, 
  *                   or the token version is outdated.
  */
-const verifyToken = async (token) => {
+const verifyToken = async (token, collectionType) => {
     try {
-        // Decode and verify the token using the secret
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(payload);
+        // Decode and verify the token
+        const payload = jwt.verify(token, SECRET_KEY);
 
-        // Connect to the database and determine the collection based on the role
+        // Determine collection based on the route or collectionType passed in
+        let collectionName;
+        if (collectionType === 'worker') {
+            collectionName = 'workers';
+        } else if (collectionType === 'user') {
+            collectionName = 'users';
+        } else {
+            throw new Error('Unknown collection type');
+        }
+
         const db = client.db("DIFinalProject");
-        const collectionName = payload.role === 'worker' ? 'workers' : 'users';
         const collection = db.collection(collectionName);
 
-        // Fetch the user or worker based on the payload's ID
+        // Fetch the user/worker and verify token version
         const user = await collection.findOne({ _id: new ObjectId(payload.id) });
 
-        // Validate the user's existence and ensure the token version matches
         if (!user || user.tokenVersion !== payload.tokenVersion) {
-            console.error('Token verification failed:', error.message);
             throw new Error('Token is invalid or outdated');
         }
 
-        // Return the payload if all checks pass
         return payload;
     } catch (error) {
-        // Handle invalid or expired tokens
         throw new Error('Invalid or expired token');
     }
 };

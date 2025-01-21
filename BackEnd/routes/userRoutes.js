@@ -61,7 +61,8 @@ router.post('/logout', async (req, res) => {
             return res.status(400).json({ error: 'No token provided' });
         }
 
-        const payload = verifyToken(token);
+        // Pass 'worker' as the collectionType
+        const payload = await verifyToken(token, 'user');
         const db = client.db("DIFinalProject");
         const collection = db.collection("users");
 
