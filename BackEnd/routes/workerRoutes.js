@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { client } = require('../connection/db');
 const { ObjectId } = require('mongodb');
-const { hashPassword, comparePassword, generateToken } = require('../utils/tokenAuth');
+const { hashPassword, comparePassword, generateToken, verifyToken } = require('../utils/tokenAuth');
 
 // **Register Route**
 router.post('/register', async (req, res) => {
@@ -21,8 +21,15 @@ router.post('/register', async (req, res) => {
         // Hash the password
         const hashedPassword = await hashPassword(password);
 
-        // Create the worker
-        const worker = { name, email, password: hashedPassword, position };
+        // Create the worker with tokenVersion
+        const worker = {
+            name,
+            email,
+            password: hashedPassword,
+            position,
+            tokenVersion: 0, // Initial version
+        };
+
         const result = await collection.insertOne(worker);
 
         res.status(201).json({ id: result.insertedId, message: 'Worker registered successfully' });
@@ -30,7 +37,6 @@ router.post('/register', async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
-
 // **Login Route**
 router.post('/login', async (req, res) => {
     try {
@@ -51,12 +57,40 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        // Generate a JWT token
-        const token = generateToken({ id: worker._id, position: worker.position });
+        // Generate a JWT token with tokenVersion
+        const token = generateToken({
+            id: worker._id,
+            position: worker.position,
+            tokenVersion: worker.tokenVersion,
+        });
 
         res.status(200).json({ token, message: 'Login successful' });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+router.post('/logout', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1]; // Extract token
+        if (!token) {
+            return res.status(400).json({ error: 'No token provided' });
+        }
+
+        const payload = verifyToken(token);
+        const db = client.db("DIFinalProject");
+        const collection = db.collection("users");
+
+        // Increment the tokenVersion in the database
+        await collection.updateOne(
+            { _id: new ObjectId(payload.id) },
+            { $inc: { tokenVersion: 1 } }
+        );
+
+        res.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+        console.error('Token verification failed:', error.message);
+        res.status(401).json({ error: 'Invalid or expired token' });
     }
 });
 
