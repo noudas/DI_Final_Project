@@ -29,6 +29,14 @@ const templateSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category', // Reference to the Categories collection
         required: false
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 }, {
     timestamps: true // Automatically manages `createdAt` and `updatedAt` fields

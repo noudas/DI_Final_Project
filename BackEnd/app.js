@@ -14,10 +14,12 @@ app.use(bodyParser.json());
 // Routes
 const userRoutes = require('./routes/userRoutes');
 const workerRoutes = require('./routes/workerRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 // Mount routes
 app.use('/api/users', userRoutes);
 app.use('/api/workers', workerRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // Error Handling
 app.use((err, req, res, next) => {

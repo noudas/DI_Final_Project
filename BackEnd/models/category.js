@@ -16,6 +16,10 @@ const categorySchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 }, {
     timestamps: true // Automatically manages `createdAt` and `updatedAt` fields
