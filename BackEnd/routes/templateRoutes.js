@@ -5,8 +5,8 @@ const { ObjectId } = require('mongodb');
 
 // Create a template
 router.post('/', async (req, res) => {
-    const { title, workerName, createdBy, content, shared, categoryId } = req.body;
- 
+    const { title, workerName, createdBy, content, shared, categoryId, context } = req.body;
+
     try {
         const db = client.db('DIFinalProject');
         const templatesCollection = db.collection('templates');
@@ -17,6 +17,7 @@ router.post('/', async (req, res) => {
             createdBy: new ObjectId(createdBy),
             content,
             shared: shared || false,
+            context: context || {}, // Include context field
             categoryId: categoryId ? new ObjectId(categoryId) : null,
             createdAt: new Date(),
             updatedAt: new Date()
@@ -68,7 +69,7 @@ router.get('/:id', async (req, res) => {
 // Update a template
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { title, workerName, content, shared, categoryId } = req.body;
+    const { title, workerName, content, shared, categoryId, context } = req.body;
 
     try {
         const db = client.db('DIFinalProject');
@@ -80,6 +81,7 @@ router.put('/:id', async (req, res) => {
             ...(content && { content }),
             ...(shared !== undefined && { shared }),
             ...(categoryId && { categoryId: new ObjectId(categoryId) }),
+            ...(context && { context }), // Update context field
             updatedAt: new Date()
         };
 

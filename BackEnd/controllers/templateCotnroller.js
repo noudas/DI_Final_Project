@@ -1,4 +1,3 @@
-// src/controllers/templateController.js
 const Template = require("../models/template");
 
 exports.createTemplate = async (templateData) => {
@@ -12,7 +11,9 @@ exports.createTemplate = async (templateData) => {
 
 exports.getTemplateById = async (templateId) => {
     try {
-        return await Template.findById(templateId).populate('workerName', 'firstName lastName'); // Populate worker details if referenced
+        return await Template.findById(templateId)
+            .populate('createdBy', 'firstName lastName') // Populate worker details
+            .populate('categoryId', 'name'); // Populate category details
     } catch (error) {
         throw error;
     }
@@ -20,7 +21,9 @@ exports.getTemplateById = async (templateId) => {
 
 exports.getAllTemplates = async () => {
     try {
-        return await Template.find({}).populate('workerName', 'firstName lastName'); // Populate worker details
+        return await Template.find({})
+            .populate('createdBy', 'firstName lastName')
+            .populate('categoryId', 'name'); // Include related fields
     } catch (error) {
         throw error;
     }
@@ -29,7 +32,9 @@ exports.getAllTemplates = async () => {
 exports.updateTemplate = async (templateId, templateData) => {
     try {
         templateData.updatedAt = Date.now(); // Update the `updatedAt` timestamp
-        return await Template.findByIdAndUpdate(templateId, templateData, { new: true }).populate('workerName', 'firstName lastName');
+        return await Template.findByIdAndUpdate(templateId, templateData, { new: true })
+            .populate('createdBy', 'firstName lastName')
+            .populate('categoryId', 'name');
     } catch (error) {
         throw error;
     }

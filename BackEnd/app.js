@@ -16,12 +16,14 @@ const userRoutes = require('./routes/userRoutes');
 const workerRoutes = require('./routes/workerRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const templateRoutes = require('./routes/templateRoutes');
+const contextRoutes = require('./routes/contextRoutes');
 
 // Mount routes
 app.use('/api/users', userRoutes);
 app.use('/api/workers', workerRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/templates', templateRoutes);
+app.use('/api/context', contextRoutes);
 
 // Error Handling
 app.use((err, req, res, next) => {
