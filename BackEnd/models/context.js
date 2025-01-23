@@ -13,6 +13,29 @@ const contextSchema = new mongoose.Schema({
         trim: true,
         default: ''
     },
+    words: [
+        {
+            word: {
+                type: String,
+                required: true,
+                trim: true
+            },
+            categoryId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Category', // Reference to the Categories collection
+                required: true
+            },
+            templateId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Template', // Reference to the Templates collection
+                required: true
+            },
+            addedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now
