@@ -2,15 +2,19 @@ const express = require('express');
 const router = express.Router();
 const { client } = require('../connection/db');
 const { ObjectId } = require('mongodb');
-const Context = require('../models/context'); // Mongoose model
+
+const getContextCollection = async () => {
+    const db = client.db("DIFinalProject"); // Replace with your database name
+    return db.collection("contexts"); // Ensure your collection name matches
+};
 
 // Route to create a new context
-router.post('/create', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { name, description, words } = req.body;
-        const newContext = new Context({ name, description, words });
-        await newContext.save();
-        res.status(201).json({ message: 'Context created successfully', context: newContext });
+        const contextCollection = await getContextCollection();
+        const result = await contextCollection.insertOne({ name, description, words, createdAt: new Date(), updatedAt: new Date() });
+        res.status(201).json({ message: 'Context created successfully', result });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error creating context', error });
@@ -21,7 +25,8 @@ router.post('/create', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const context = await Context.findById(ObjectId(id));
+        const contextCollection = await getContextCollection();
+        const context = await contextCollection.findOne({ _id: new ObjectId(id) });
         if (!context) {
             return res.status(404).json({ message: 'Context not found' });
         }
@@ -35,7 +40,8 @@ router.get('/:id', async (req, res) => {
 // Route to fetch all contexts
 router.get('/', async (req, res) => {
     try {
-        const contexts = await Context.find({});
+        const contextCollection = await getContextCollection();
+        const contexts = await contextCollection.find({}).toArray();
         res.status(200).json(contexts);
     } catch (error) {
         console.error(error);
@@ -48,11 +54,16 @@ router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
     try {
-        const updatedContext = await Context.findByIdAndUpdate(ObjectId(id), updateData, { new: true });
-        if (!updatedContext) {
+        const contextCollection = await getContextCollection();
+        const result = await contextCollection.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { ...updateData, updatedAt: new Date() } },
+            { returnDocument: 'after' }
+        );
+        if (result.value) {
             return res.status(404).json({ message: 'Context not found' });
         }
-        res.status(200).json({ message: 'Context updated successfully', context: updatedContext });
+        res.status(200).json({ message: 'Context updated successfully', result });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error updating context', error });
@@ -63,11 +74,12 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const deletedContext = await Context.findByIdAndDelete(ObjectId(id));
-        if (!deletedContext) {
+        const contextCollection = await getContextCollection();
+        const result = await contextCollection.findOneAndDelete({ _id: new ObjectId(id) });
+        if (result.value) {
             return res.status(404).json({ message: 'Context not found' });
         }
-        res.status(200).json({ message: 'Context deleted successfully', context: deletedContext });
+        res.status(200).json({ message: 'Context deleted successfully', result });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error deleting context', error });
@@ -79,13 +91,16 @@ router.post('/:id/words', async (req, res) => {
     const { id } = req.params;
     const { words } = req.body;
     try {
-        const context = await Context.findById(ObjectId(id));
-        if (!context) {
+        const contextCollection = await getContextCollection();
+        const result = await contextCollection.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $push: { words: { $each: words } }, $set: { updatedAt: new Date() } },
+            { returnDocument: 'after' }
+        );
+        if (result.value) {
             return res.status(404).json({ message: 'Context not found' });
         }
-        context.words.push(...words);
-        await context.save();
-        res.status(200).json({ message: 'Words added successfully', context });
+        res.status(200).json({ message: 'Words added successfully', result });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error adding words', error });
@@ -93,20 +108,27 @@ router.post('/:id/words', async (req, res) => {
 });
 
 // Route to remove a word from a context
-router.delete('/:id/words/:wordId', async (req, res) => {
-    const { id, wordId } = req.params;
+router.delete('/:id/words', async (req, res) => {
+    const { id } = req.params;
     try {
-        const context = await Context.findById(ObjectId(id));
-        if (!context) {
+        const contextCollection = await getContextCollection();
+        const result = await contextCollection.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { words: [], updatedAt: new Date() } }, // Clears the words array
+            { returnDocument: 'after' }
+        );
+
+        if (!result) {
+            // If no document was found
             return res.status(404).json({ message: 'Context not found' });
         }
-        context.words = context.words.filter(word => word._id.toString() !== wordId);
-        await context.save();
-        res.status(200).json({ message: 'Word removed successfully', context });
+
+        res.status(200).json({ message: 'Words array cleared successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error removing word', error });
+        res.status(500).json({ message: 'Error clearing words', error });
     }
 });
+
 
 module.exports = router;

@@ -29,12 +29,6 @@ const templateSchema = new mongoose.Schema({
         ref: 'Category', // Reference to the Categories collection
         required: false
     },
-    contextIds: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Context', // Reference to the Contexts collection
-        }
-    ],
     createdAt: {
         type: Date,
         default: Date.now

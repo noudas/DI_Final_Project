@@ -23,7 +23,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/workers', workerRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/templates', templateRoutes);
-app.use('/api/context', contextRoutes);
+app.use('/api/contexts', contextRoutes);
 
 // Error Handling
 app.use((err, req, res, next) => {
