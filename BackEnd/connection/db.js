@@ -1,3 +1,4 @@
+//src/connection/db.js
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const uri = "mongodb+srv://admin:admin@difinalproject.wb5cp.mongodb.net/?retryWrites=true&w=majority";
