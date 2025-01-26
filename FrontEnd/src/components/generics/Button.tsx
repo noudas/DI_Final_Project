@@ -43,7 +43,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={className} // Allows custom styling via class names.
       aria-label={ariaLabel} // Adds an ARIA label for better accessibility (optional).
     >
-      {text} {/* Displays the button's visible text. */}
+      {text}
     </button>
   );
 };
