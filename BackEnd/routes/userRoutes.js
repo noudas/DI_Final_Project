@@ -5,27 +5,49 @@ const { ObjectId } = require('mongodb');
 const { hashPassword, comparePassword, generateToken, verifyToken } = require('../utils/tokenAuth');
 
 // **Register Route**
+// **Register Route**
 router.post('/register', async (req, res) => {
     try {
         const db = client.db("DIFinalProject");
         const collection = db.collection("users");
 
-        // Hash the password
-        const hashedPassword = await hashPassword(req.body.password);
+        const {
+            username,
+            email,
+            password,
+            firstName,
+            lastName,
+        } = req.body;
 
-        // Create user with tokenVersion
+        // Check if the user already exists
+        const existingUser = await collection.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'User with this email already exists' });
+        }
+
+        // Hash the password
+        const hashedPassword = await hashPassword(password);
+
+        // Create user object with all fields
         const user = {
-            email: req.body.email,
+            username,
+            email,
             password: hashedPassword,
+            firstName,
+            lastName,
             tokenVersion: 0, // Initial version
+            createdAt: new Date(),
+            updatedAt: new Date(),
         };
 
         const result = await collection.insertOne(user);
-        res.status(201).json({ id: result.insertedId });
+
+        res.status(201).json({ id: result.insertedId, message: 'User registered successfully' });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 });
+
 
 
 // **Login Route**

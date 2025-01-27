@@ -10,7 +10,16 @@ router.post('/register', async (req, res) => {
         const db = client.db("DIFinalProject");
         const collection = db.collection("workers");
 
-        const { name, email, password, position } = req.body;
+        const {
+            username,
+            email,
+            password,
+            firstName,
+            lastName,
+            role,
+            specialty,
+            experienceYears
+        } = req.body;
 
         // Check if the worker already exists
         const existingWorker = await collection.findOne({ email });
@@ -23,11 +32,17 @@ router.post('/register', async (req, res) => {
 
         // Create the worker with tokenVersion
         const worker = {
-            name,
+            username,
             email,
             password: hashedPassword,
-            position,
+            firstName,
+            lastName,
+            role,
+            specialty,
+            experienceYears,
             tokenVersion: 0, // Initial version
+            createdAt: new Date(),
+            updatedAt: new Date(),
         };
 
         const result = await collection.insertOne(worker);

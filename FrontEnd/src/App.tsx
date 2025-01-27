@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-    <RegisterWorker/>
+    <LoginWorker/>
     </>
   )
 }
