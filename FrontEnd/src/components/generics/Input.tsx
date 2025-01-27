@@ -1,28 +1,28 @@
-import { useRef } from 'react';
-
 /**
- * A generic input component that provides a reusable way to render input fields.
- * 
- * This component supports various input types and utilizes React's `useRef`
- * for efficient access to the DOM element. It ensures better organization and 
- * separation of logic for handling input changes.
+ * A reusable and type-safe input component for handling form inputs.
  *
- * - template T - The shape of the form object, ensuring type safety for the input's `name` and `value`.
+ * template T - Represents the shape of the form object to ensure strong typing.
  *
- * - param {Object} props - The props for the Input component.
- * - param {string} props.label - The label text displayed for the input field.
- * - param {keyof T} props.name - The unique name identifier for the input, tied to the parent form's state.
- * - param {string} [props.type='text'] - The type of the input field (e.g., text, email, password).
- * - param {string} [props.placeholder] - Placeholder text for the input field.
- * - param {T[keyof T]} props.value - The current value of the input, tied to the parent form's state.
- * - param {Function} props.onChange - A callback triggered when the input value changes.
- *                                     It receives the `name` and updated `value` as arguments.
- * - param {boolean} [props.required=false] - Whether the input field is required for form submission.
+ * Props:
+ * - `label`: A string representing the label text displayed above the input field.
+ * - `name`: A unique identifier for the input, tied to the parent form's state.
+ * - `type`: An optional string specifying the type of input (e.g., 'text', 'password', 'email'). Defaults to 'text'.
+ * - `placeholder`: Optional placeholder text displayed when the input is empty.
+ * - `value`: The current value of the input field, tied to the parent form's state.
+ * - `onChange`: A callback triggered when the input value changes, passing `name` and the updated `value`.
+ * - `required`: A boolean indicating whether the input is required for form submission. Defaults to false.
  *
- * - returns {JSX.Element} - A reusable and type-safe input component.
+ * Example Usage:
+ * ```
+ * <Input<MyFormType>
+ *   label="Username"
+ *   name="username"
+ *   value={formState.username}
+ *   onChange={(name, value) => setFormState({ ...formState, [name]: value })}
+ * />
+ * ```
  */
-
-interface InputProps<T> {
+interface InputProps<T extends Record<string, any>> {
   label: string;
   name: keyof T;
   type?: string;
@@ -32,6 +32,11 @@ interface InputProps<T> {
   required?: boolean;
 }
 
+/**
+ * A flexible input component designed to integrate seamlessly into forms with diverse data types.
+ *
+ * template T - Enforces strong typing for the input's `name` and `value`.
+ */
 export const Input = <T extends Record<string, any>>({
   label,
   name,
@@ -41,36 +46,16 @@ export const Input = <T extends Record<string, any>>({
   onChange,
   required = false,
 }: InputProps<T>) => {
-  // Create a ref to the input element, allowing direct access to the DOM element for advanced use cases.
-  const inputRef = useRef<HTMLInputElement>(null);
-
-
-  /**
-   * Handles the input's change event by accessing the current value via the ref.
-   * 
-   * This function is called whenever the user types into the input. Instead of relying 
-   * on the event object, it uses `useRef` to access the input's current value, ensuring
-   * efficient updates and reduced re-renders.
-   */
-
-  const handleChange = () => {
-    if (inputRef.current) {
-      onChange(name, inputRef.current.value as T[keyof T]);
-    }
-  };
-
   return (
     <div>
       <label htmlFor={name as string}>{label}</label>
-
       <input
-        ref={inputRef}
         id={name as string}
         name={name as string}
         type={type}
         placeholder={placeholder}
         value={value as string}
-        onChange={handleChange}
+        onChange={(e) => onChange(name, e.target.value as T[keyof T])}
         required={required}
       />
     </div>

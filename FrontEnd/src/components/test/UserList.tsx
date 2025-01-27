@@ -13,13 +13,11 @@ const UserList: React.FC = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
+    console.log(users);
 
   return (
-    <ul>
-      {users.map((user) => (
-        <li key={user.id}>{user.username}</li>
-      ))}
-    </ul>
+    <>
+    </>
   );
 };
 

@@ -1,10 +1,10 @@
-import UserList from "./components/test/UserList"
+import LoginUser from "./components/pages/User/LoginUser"
 
 function App() {
 
   return (
     <>
-      <UserList/>
+    <LoginUser/>
     </>
   )
 }
