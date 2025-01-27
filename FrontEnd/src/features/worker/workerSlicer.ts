@@ -27,7 +27,7 @@ enum WorkerRole {
   Psychologist = 'psychologist',
 }
 
-interface RegisterUserData {
+interface RegisterWorkerData {
   username: string;
   email: string;
   password: string;
@@ -42,7 +42,7 @@ interface RegisterUserData {
 export const registerWorker = createAsyncThunk(
   'workers/registerWorker',
   async (
-    workerData: RegisterUserData,
+    workerData: RegisterWorkerData,
     { rejectWithValue }
   ) => {
     try {
