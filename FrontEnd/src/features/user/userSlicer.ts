@@ -21,6 +21,30 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// Async Thunk for user registration
+export const registerUser = createAsyncThunk(
+  'users/registerUser',
+  async (
+    userData: {
+      username: string;
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      // Send the updated user data to the backend
+      const response = await apiClient.post<{ message: string }>('/users/register', userData);
+      return response.data; // Return success message
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Registration failed');
+    }
+  }
+);
+
+
 // Initial state
 interface UserState {
   users: User[];
@@ -68,6 +92,21 @@ const userSlice = createSlice({
         state.token = action.payload.token;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Register user thunks
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally handle success, like showing a message
+        state.error = null; // reset error if registration is successful
+      })
+      .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

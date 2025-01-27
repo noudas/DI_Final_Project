@@ -10,8 +10,8 @@ export interface User {
     username: string;
     email: string;
     password: string;
-    firstName?: string;
-    lastName?: string;
+    firstName: string;
+    lastName: string;
 }
 
 // Worker Interface (Extends User)
