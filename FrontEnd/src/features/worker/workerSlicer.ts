@@ -58,7 +58,7 @@ const workerSlice = createSlice({
       })
 
 
-      // Login user thunks
+      // Login worker thunks
       .addCase(loginWorker.pending, (state) => {
         state.loading = true;
         state.error = null;
