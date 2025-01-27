@@ -36,14 +36,15 @@ interface RegisterFormData {
     };
   
     const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (formData.password === formData.confirmPassword) {
-        // Dispatch the registerUser action
-        dispatch(registerUser(formData));
-      } else {
-        alert('Passwords do not match');
-      }
-    };
+        e.preventDefault();
+        if (formData.password === formData.confirmPassword) {
+          // Dispatch the registerUser action with the form data
+          dispatch(registerUser(formData));
+        } else {
+          alert('Passwords do not match');
+        }
+      };
+      
   
     return (
       <form onSubmit={handleSubmit}>

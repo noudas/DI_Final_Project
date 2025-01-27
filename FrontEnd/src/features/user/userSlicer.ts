@@ -22,20 +22,21 @@ export const loginUser = createAsyncThunk(
 );
 
 // Async Thunk for user registration
+interface RegisterUserData {
+  username: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
 export const registerUser = createAsyncThunk(
   'users/registerUser',
   async (
-    userData: {
-      username: string;
-      email: string;
-      password: string;
-      firstName: string;
-      lastName: string;
-    },
+    userData: RegisterUserData,
     { rejectWithValue }
   ) => {
     try {
-      // Send the updated user data to the backend
       const response = await apiClient.post<{ message: string }>('/users/register', userData);
       return response.data; // Return success message
     } catch (error: any) {
