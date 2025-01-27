@@ -4,11 +4,11 @@ import { Label } from '../../generics/Label';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginWorker } from '../../../features/worker/workerSlicer';
 
-const LoginUser = () => {
+const LoginWorker = () => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPass, setLoginPass] = useState('');
   const dispatch = useDispatch();
-  const { loading, error, token } = useSelector((state) => state.users);
+  const { loading, error, token } = useSelector((state) => state.workers);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,4 +60,4 @@ const LoginUser = () => {
   );
 };
 
-export default LoginUser;
+export default LoginWorker;
