@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchCategories, createCategory } from '../../../features/categories/categoriesSlice';
-import { RootState } from '../../../app/store';
-import { Category } from '../../../types/types';
+import { fetchCategories, createCategory } from '../../../../features/categories/categoriesSlice';
+import { RootState } from '../../../../app/store';
+import { Category } from '../../../../types/types';
 
-const CategoriesComponent: React.FC = () => {
+interface Props {
+  onSelectCategory: (categoryId: string | null) => void;
+}
+
+const CategoriesComponent: React.FC<Props> = ({ onSelectCategory }) => {
   const dispatch = useDispatch();
   const { categories, status, error } = useSelector((state: RootState) => state.categories);
 
@@ -13,7 +17,6 @@ const CategoriesComponent: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch categories on component mount
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchCategories());
@@ -21,8 +24,12 @@ const CategoriesComponent: React.FC = () => {
   }, [dispatch, status]);
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(event.target.value);
+    const selectedCategoryId = event.target.value || null;
+    console.log(selectedCategoryId);
+    setSelectedCategory(selectedCategoryId); // Update state with selected ID
+    onSelectCategory(selectedCategoryId);   // Pass selected ID to parent
   };
+  
 
   const handleAddCategory = async () => {
     if (newCategoryName.trim()) {
@@ -47,18 +54,17 @@ const CategoriesComponent: React.FC = () => {
   return (
     <div>
       {/* Category selection dropdown */}
-      <div>
-        <select value={selectedCategory || ''} onChange={handleCategoryChange}>
+      <select value={selectedCategory || ''} onChange={handleCategoryChange}>
           <option value="" disabled>
             Select a category
           </option>
           {categories.map((category: Category) => (
-            <option key={category.id} value={category.id}>
+            <option key={category._id} value={category._id}>
               {category.name}
             </option>
           ))}
-        </select>
-      </div>
+      </select>
+
 
       {/* Form to add a new category */}
       <div>
