@@ -32,6 +32,7 @@ export const TemplateForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [formState, setFormState] = useState<TemplateFormState>(initialFormState);
   const [isWorkersLoaded, setIsWorkersLoaded] = useState(false);
+  const [selectedWorkerId, setSelectedWorkerId] = useState<string>(''); // New state for selected worker's ID
 
   const categories = useSelector((state: RootState) => state.categories.categories);
   const workers = useSelector((state: RootState) => state.workers.workers);
@@ -75,9 +76,9 @@ export const TemplateForm: React.FC = () => {
     if (selectedWorker) {
       setFormState((prevState) => ({
         ...prevState,
-        workerName: `${selectedWorker.firstName} ${selectedWorker.lastName}`,
-        createdBy: selectedWorker.id, // Use the actual ID here
+        workerName: `${selectedWorker.firstName} ${selectedWorker.lastName}`, // Update workerName with full name
       }));
+      setSelectedWorkerId(selectedWorker._id); // Set the worker's ID in the new state
       console.log('Selected Worker:', selectedWorker);
     } else {
       console.log('Selected worker not found:', workerFullName);
@@ -90,6 +91,7 @@ export const TemplateForm: React.FC = () => {
     console.log('Form submission:', formState);
     dispatch(createTemplate(formState));
     setFormState(initialFormState); // Reset form
+    setSelectedWorkerId(''); // Reset worker ID after submission
   };
 
   return (
@@ -129,7 +131,7 @@ export const TemplateForm: React.FC = () => {
         <Input<TemplateFormState>
           label="Worker ID"
           name="createdBy"
-          value={formState.createdBy || ''}
+          value={selectedWorkerId || ''} // Bind the selected worker's ID here
           onChange={() => {}}
           readOnly
         />
