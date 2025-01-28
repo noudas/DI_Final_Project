@@ -9,7 +9,7 @@ export const store = configureStore({
     users: userReducer,
     workers:workerReducer,
     categories:categoryReducer,
-    template: templateReducer,
+    templates: templateReducer,
   },
 });
 
