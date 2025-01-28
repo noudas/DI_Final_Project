@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from '../features/user/userSlicer';
 import workerReducer from '../features/worker/workerSlicer';
 import categoryReducer from '../features/categories/categoriesSlice';
+import templateReducer from '../features/template/templateSlicer';
 
 export const store = configureStore({
   reducer: {
     users: userReducer,
     workers:workerReducer,
     categories:categoryReducer,
+    template: templateReducer,
   },
 });
 

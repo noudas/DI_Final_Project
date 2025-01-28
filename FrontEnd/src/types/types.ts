@@ -1,3 +1,5 @@
+//src/types/types.js
+
 // Enums
 export enum WorkerRole {
     Nutritionist = 'nutritionist',
