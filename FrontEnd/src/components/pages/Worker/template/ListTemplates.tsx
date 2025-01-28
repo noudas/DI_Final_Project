@@ -22,7 +22,24 @@ const ListTemplate: React.FC = () => {
         <ul>
           {templates.map((template) => (
             <li key={template.id}>
-              {template.title} - {template.workerName}
+              <h3>{template.title} - {template.workerName}</h3>
+              <h4>Content:</h4>
+              <div className="template-content">
+                {Object.entries(template.content).map(([key, value]) => (
+                  <div key={key}>
+                    <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>
+                    {Array.isArray(value) ? (
+                      <ul>
+                        {value.map(item => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <pre>{JSON.stringify(value, null, 2)}</pre>
+                    )}
+                  </div>
+                ))}
+              </div>
             </li>
           ))}
         </ul>
