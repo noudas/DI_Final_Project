@@ -8,7 +8,7 @@ export const fetchTemplates = createAsyncThunk('templates/fetchTemplates', async
   return response.data;
 });
 
-// Async Thunk for user registration
+// Async Thunk for Template registration
 type TemplateContent = string | Record<string, any>;
 
 interface RegisterTemplateData {
@@ -19,6 +19,20 @@ interface RegisterTemplateData {
     shared: boolean;
     categoryId?: string | null;
 }
+
+
+export const createTemplate = createAsyncThunk(
+  'templates/createTemplate',
+  async (templateData: RegisterTemplateData, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post<Template>('/templates', templateData);
+      return response.data;
+    } catch (error: any) {
+      console.error('Error creating template:', error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 
 // Initial state
@@ -55,6 +69,20 @@ const templateSlice = createSlice({
       .addCase(fetchTemplates.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch users';
+      })
+      
+      // Create template
+      .addCase(createTemplate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createTemplate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.templates.push(action.payload); // Add new template to the state
+      })
+      .addCase(createTemplate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string || 'Failed to create template';
       });
   },
 });

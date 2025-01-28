@@ -6,11 +6,24 @@ const { ObjectId } = require('mongodb');
 // Create a template
 router.post('/', async (req, res) => {
     const { title, workerName, createdBy, content, shared, categoryId } = req.body;
-
+    console.log(req.body);  
     try {
         const db = client.db('DIFinalProject');
         const templatesCollection = db.collection('templates');
 
+        // Validate ObjectId format
+        if (!ObjectId.isValid(createdBy)) {
+            return res.status(400).json({ error: 'Invalid createdBy ObjectId' });
+        }
+        
+        let categoryObjectId = null;
+        if (categoryId) {
+            if (!ObjectId.isValid(categoryId)) {
+                return res.status(400).json({ error: 'Invalid categoryId ObjectId' });
+            }
+            categoryObjectId = new ObjectId(categoryId);
+        }
+        
         const newTemplate = {
             title,
             workerName,

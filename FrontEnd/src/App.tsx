@@ -5,12 +5,12 @@ import LoginWorker from "./components/pages/Worker/LoginWorker"
 import RegisterWorker from "./components/pages/Worker/RegisterWorker"
 import ListTemplate from "./components/pages/Worker/template/ListTemplates"
 import TemplateManager from "./components/pages/Worker/template/TemplateManager"
-
+import { TemplateForm } from "./components/pages/Worker/template/TemplateForm"
 function App() {
 
   return (
     <>
-    <TemplateManager/>
+    <TemplateForm/>
     </>
   )
 }
