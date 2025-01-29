@@ -6,7 +6,6 @@ import LoginUser from './components/pages/User/LoginUser';
 import RegisterUser from './components/pages/User/RegisterUser';
 import LoginWorker from './components/pages/Worker/LoginWorker';
 import RegisterWorker from './components/pages/Worker/RegisterWorker';
-import ListTemplate from './components/pages/Worker/template/ListTemplates';
 import TemplateManager from './components/pages/Worker/template/TemplateManager';
 import { TemplateForm } from './components/pages/Worker/template/TemplateForm';
 
@@ -34,7 +33,6 @@ const App: React.FC = () => {
           <Route path="/login-worker" element={<LoginWorker />} />
           <Route path="/register-worker" element={<RegisterWorker />} />
           <Route path="/template-form" element={<TemplateForm />} />
-          <Route path="/list-templates" element={<ListTemplate />} />
           <Route path="/template-manager" element={<TemplateManager />} />
 
           {/* Default route */}

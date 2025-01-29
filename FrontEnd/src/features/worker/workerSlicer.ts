@@ -21,6 +21,19 @@ export const loginWorker = createAsyncThunk(
   }
 );
 
+// Async Thunk for worker logout
+export const logoutWorker = createAsyncThunk(
+  'workers/logoutWorker',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post('/workers/logout');
+      return response.data; // success message
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Logout failed');
+    }
+  }
+);
+
 // RegisterUserData to match the registration form including Worker attributes
 enum WorkerRole {
   Nutritionist = 'nutritionist',
@@ -76,7 +89,7 @@ const workerSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch users thunks
+      // Fetch workers thunks
       .addCase(fetchWorkers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -87,9 +100,8 @@ const workerSlice = createSlice({
       })
       .addCase(fetchWorkers.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch users';
+        state.error = action.error.message || 'Failed to fetch workers';
       })
-
 
       // Login worker thunks
       .addCase(loginWorker.pending, (state) => {
@@ -105,14 +117,27 @@ const workerSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // Register user thunks
+      // Logout worker thunks
+      .addCase(logoutWorker.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutWorker.fulfilled, (state) => {
+        state.loading = false;
+        state.token = null; // Clear token on successful logout
+      })
+      .addCase(logoutWorker.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Register worker thunks
       .addCase(registerWorker.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(registerWorker.fulfilled, (state, action) => {
         state.loading = false;
-        // Optionally handle success, like showing a message
         state.error = null; // reset error if registration is successful
       })
       .addCase(registerWorker.rejected, (state, action) => {

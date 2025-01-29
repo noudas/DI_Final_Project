@@ -3,6 +3,7 @@ import { Input } from '../../generics/Input';
 import { Label } from '../../generics/Label';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginWorker } from '../../../features/worker/workerSlicer';
+import { useNavigate } from 'react-router-dom';  // Import the useNavigate hook
 
 const LoginWorker = () => {
   const [loginEmail, setLoginEmail] = useState('');
@@ -10,21 +11,26 @@ const LoginWorker = () => {
   const dispatch = useDispatch();
   const { loading, error, token } = useSelector((state) => state.workers);
 
+  // Use navigate hook to programmatically navigate
+  const navigate = useNavigate();
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Dispatch the login action
     dispatch(
-        loginWorker({ email: loginEmail, password: loginPass })
+      loginWorker({ email: loginEmail, password: loginPass })
     );
   };
 
-  // If the login is successful, store the token in localStorage and show alert
+  // If the login is successful, store the token in localStorage, show alert, and redirect
   useEffect(() => {
     if (token) {
       localStorage.setItem('authToken', token);
       alert('Login successful!');
+      // Navigate to the list-templates page after successful login
+      navigate('/template-manager');
     }
-  }, [token]);
+  }, [token, navigate]);
 
   return (
     <div>

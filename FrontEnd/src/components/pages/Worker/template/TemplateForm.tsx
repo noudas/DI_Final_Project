@@ -7,6 +7,7 @@ import { AppDispatch, RootState } from '../../../../app/store';
 import { createTemplate } from '../../../../features/template/templateSlicer';
 import { fetchCategories } from '../../../../features/categories/categoriesSlice';
 import { fetchWorkers } from '../../../../features/worker/workerSlicer';
+import WorkerNavbar from '../../../Navbar/WorkerNavbar';
 
 // Define the shape of the form data
 interface TemplateFormState {
@@ -115,7 +116,9 @@ export const TemplateForm: React.FC = () => {
   };
 
 
-  return (
+  return (<>
+    <WorkerNavbar/>
+    <h1>Create a Template</h1>
     <form onSubmit={handleSubmit}>
       <div>
         <Label<TemplateFormState> text="Title" htmlFor="title" required />
@@ -215,5 +218,6 @@ export const TemplateForm: React.FC = () => {
       </div>
       <Button text={loading ? 'Submitting...' : 'Submit'} type="submit" disabled={loading} />
     </form>
+    </>
   );
 };
