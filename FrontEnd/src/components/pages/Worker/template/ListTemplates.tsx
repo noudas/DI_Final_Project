@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../../../app/store';
-import { fetchTemplates } from '../../../../features/template/templateSlicer';
+import { fetchTemplates, updateTemplate, removeTemplate } from '../../../../features/template/templateSlicer';
 
 interface Props {
   selectedCategoryId?: string;
@@ -15,13 +15,16 @@ const ListTemplate: React.FC<Props> = ({ selectedCategoryId }) => {
     dispatch(fetchTemplates());
   }, [dispatch]);
 
-  console.log('Templates state:', templates);
-  console.log(
-    'Filtered Templates:',
-    selectedCategoryId
-      ? templates.filter((template) => template.categoryId === selectedCategoryId)
-      : templates
-  );
+  const handleUpdate = (template: Template) => {
+    // You can modify the template data here before dispatching the update action
+    
+    const updatedTemplate = { ...template, title: `${template.title} (Updated)` }; // Example modification
+    dispatch(updateTemplate(updatedTemplate));
+  };
+
+  const handleRemove = (templateId: string) => {
+    dispatch(removeTemplate(templateId));
+  };
 
   return (
     <div>
@@ -59,6 +62,8 @@ const ListTemplate: React.FC<Props> = ({ selectedCategoryId }) => {
                       </div>
                     ))}
                   </div>
+                  <button onClick={() => handleUpdate(template)}>Update</button>
+                  <button onClick={() => handleRemove(template._id)}>Remove</button>
                 </li>
               ))
           ) : (
