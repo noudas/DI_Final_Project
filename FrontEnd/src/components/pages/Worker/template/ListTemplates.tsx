@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../../../app/store';
 import { fetchTemplates, updateTemplate, removeTemplate } from '../../../../features/template/templateSlicer';
@@ -11,19 +11,42 @@ const ListTemplate: React.FC<Props> = ({ selectedCategoryId }) => {
   const dispatch: AppDispatch = useDispatch();
   const { templates, loading, error } = useSelector((state: RootState) => state.templates);
 
+  // Local state for tracking edited template
+  const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
+  const [editedData, setEditedData] = useState<Template | null>(null);
+
   useEffect(() => {
     dispatch(fetchTemplates());
   }, [dispatch]);
 
-  const handleUpdate = (template: Template) => {
-    // You can modify the template data here before dispatching the update action
-    
-    const updatedTemplate = { ...template, title: `${template.title} (Updated)` }; // Example modification
-    dispatch(updateTemplate(updatedTemplate));
+  const handleEditClick = (template: Template) => {
+    setEditingTemplateId(template._id);
+    setEditedData({ ...template }); // Clone template to avoid mutating state directly
+  };
+
+  const handleInputChange = (key: string, value: any) => {
+    if (editedData) {
+      setEditedData((prev) => prev ? { ...prev, [key]: value } : prev);
+    }
+  };
+
+  const handleContentChange = (key: string, value: any) => {
+    if (editedData) {
+      setEditedData((prev) => prev ? { ...prev, content: { ...prev.content, [key]: value } } : prev);
+    }
+  };
+
+  const handleSave = () => {
+    if (editedData) {
+      dispatch(updateTemplate(editedData)); // Dispatch update
+      dispatch(fetchTemplates());
+      setEditingTemplateId(null); // Exit edit mode
+    }
   };
 
   const handleRemove = (templateId: string) => {
     dispatch(removeTemplate(templateId));
+    dispatch(fetchTemplates());
   };
 
   return (
@@ -33,42 +56,69 @@ const ListTemplate: React.FC<Props> = ({ selectedCategoryId }) => {
       {error && <p>Error: {error}</p>}
       {!loading && !error && (
         <ul>
-          {selectedCategoryId ? (
-            templates
-              .filter((template) => template.categoryId === selectedCategoryId)
-              .map((template) => (
-                <li key={template.id}>
-                  <h3>
-                    {template.title} - {template.workerName}
-                  </h3>
-                  <h4>Content:</h4>
-                  <div className="template-content">
-                    {Object.entries(template.content).map(([key, value]) => (
-                      <div key={key}>
-                        <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>
-                        {Array.isArray(value) ? (
-                          <ul>
-                            {value.map((item) => (
-                              <li key={item}>
-                                {typeof item === 'string' ? item : JSON.stringify(item)}
-                              </li>
+            {selectedCategoryId ? (
+              // Filter templates by selected category
+              templates.filter((template) => template.categoryId === selectedCategoryId).length === 0 ? (
+                // Show empty message when no templates found for the selected category
+                <p>This category is empty.</p>
+              ) : (
+                templates
+                  .filter((template) => template.categoryId === selectedCategoryId)
+                  .map((template) => (
+                    <li key={template._id}>
+                      {editingTemplateId === template._id && editedData ? (
+                        <>
+                          <input
+                            type="text"
+                            value={editedData.title}
+                            onChange={(e) => handleInputChange('title', e.target.value)}
+                          />
+                          <input
+                            type="text"
+                            value={editedData.workerName}
+                            onChange={(e) => handleInputChange('workerName', e.target.value)}
+                          />
+
+                          <h4>Content:</h4>
+                          <div className="template-content">
+                            {Object.entries(editedData.content).map(([key, value]) => (
+                              <div key={key}>
+                                <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>
+                                <input
+                                  type="text"
+                                  value={String(value)}
+                                  onChange={(e) => handleContentChange(key, e.target.value)}
+                                />
+                              </div>
                             ))}
-                          </ul>
-                        ) : typeof value === 'object' && value !== null ? (
-                          <pre>{JSON.stringify(value, null, 2)}</pre>
-                        ) : (
-                          <span>{String(value)}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <button onClick={() => handleUpdate(template)}>Update</button>
-                  <button onClick={() => handleRemove(template._id)}>Remove</button>
-                </li>
-              ))
-          ) : (
-            <p>No templates selected.</p>
-          )}
+                          </div>
+
+                          <button onClick={handleSave}>Save</button>
+                          <button onClick={() => setEditingTemplateId(null)}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <h3>{template.title} - {template.workerName}</h3>
+
+                          <h4>Content:</h4>
+                          <div className="template-content">
+                            {Object.entries(template.content).map(([key, value]) => (
+                              <div key={key}>
+                                <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {String(value)}
+                              </div>
+                            ))}
+                          </div>
+
+                          <button onClick={() => handleEditClick(template)}>Edit</button>
+                          <button onClick={() => handleRemove(template._id)}>Remove</button>
+                        </>
+                      )}
+                    </li>
+                  ))
+              )
+            ) : (
+              <p>No templates selected.</p>
+            )}
         </ul>
       )}
     </div>
