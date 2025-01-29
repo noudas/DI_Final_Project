@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../../app/store";
 import { fetchTemplates, updateTemplate, removeTemplate } from "../../../../features/template/templateSlicer";
-import ExportToDocx from "./ExporttoDocx";
+import ExportToDocx from "./ExportToDocx";
 
 interface Props {
   selectedCategoryId?: string;
@@ -51,9 +51,13 @@ const ListTemplate: React.FC<Props> = ({ selectedCategoryId }) => {
   };
 
   const handleAddToExport = (template: Template) => {
-    setSelectedTemplates((prev) =>
-      prev.some((t) => t._id === template._id) ? prev : [...prev, template]
-    );
+    // Ensure template is added only if it's not already in the selectedTemplates
+    setSelectedTemplates((prev) => (prev.some((t) => t._id === template._id) ? prev : [...prev, template]));
+  };
+
+  const handleRemoveFromExport = (templateId: string) => {
+    // Remove template by ID
+    setSelectedTemplates((prev) => prev.filter((template) => template._id !== templateId));
   };
 
   return (
@@ -130,7 +134,10 @@ const ListTemplate: React.FC<Props> = ({ selectedCategoryId }) => {
         </ul>
       )}
 
-      <ExportToDocx templates={selectedTemplates} />
+      <ExportToDocx
+        templates={selectedTemplates}
+        onRemoveFromExport={handleRemoveFromExport}
+      />
     </div>
   );
 };

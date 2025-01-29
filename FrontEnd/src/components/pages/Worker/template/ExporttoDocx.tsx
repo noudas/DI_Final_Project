@@ -1,20 +1,21 @@
+import React, { useState, useEffect } from "react";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import { saveAs } from "file-saver";
 
-interface Template {
-  _id: string;
-  title: string;
-  workerName: string;
-  content: Record<string, string>;
-}
-
 interface Props {
   templates: Template[];
+  onRemoveFromExport: (templateId: string) => void;
 }
 
-const ExportToDocx: React.FC<Props> = ({ templates }) => {
+const ExportToDocx: React.FC<Props> = ({ templates, onRemoveFromExport }) => {
+  const [selectedTemplates, setSelectedTemplates] = useState<Template[]>(templates);
+
+  useEffect(() => {
+    setSelectedTemplates(templates);
+  }, [templates]);
+
   const generateDocx = () => {
-    if (templates.length === 0) {
+    if (selectedTemplates.length === 0) {
       alert("Please select at least one template.");
       return;
     }
@@ -23,29 +24,45 @@ const ExportToDocx: React.FC<Props> = ({ templates }) => {
       sections: [
         {
           properties: {},
-          children: templates.map((template) => [
+          children: selectedTemplates.flatMap((template) => [
             new Paragraph({
               children: [
                 new TextRun({ text: template.title, bold: true, size: 28 }),
                 new TextRun(` - ${template.workerName}`),
               ],
             }),
-            ...Object.entries(template.content).map(
-              ([key, value]) =>
-                new Paragraph({
-                  children: [
-                    new TextRun({ text: `${key}: `, bold: true }),
-                    new TextRun(value),
-                  ],
-                })
-            ),
+            ...Object.entries(template.content).flatMap(([key, value]) => {
+              if (Array.isArray(value)) {
+                return [
+                  new Paragraph({
+                    children: [
+                      new TextRun({ text: `${key}:`, bold: true }),
+                      new TextRun(''),
+                    ],
+                  }),
+                  ...value.map((item) => 
+                    new Paragraph({
+                      children: [new TextRun(`- ${item}`)],
+                    })
+                  ),
+                ];
+              } else {
+                return [
+                  new Paragraph({
+                    children: [
+                      new TextRun({ text: `${key}:`, bold: true }),
+                      new TextRun(value),
+                    ],
+                  }),
+                ];
+              }
+            }),
             new Paragraph(""), // Space between templates
-          ]).flat(),
+          ]),
         },
       ],
     });
 
-    // Generate and save document
     Packer.toBlob(doc).then((blob) => {
       saveAs(blob, "Templates.docx");
     });
@@ -55,18 +72,19 @@ const ExportToDocx: React.FC<Props> = ({ templates }) => {
     <div>
       <h2>Selected Templates</h2>
       <ul>
-        {templates.length === 0 ? (
+        {selectedTemplates.length === 0 ? (
           <p>No templates selected.</p>
         ) : (
-          templates.map((template) => (
+          selectedTemplates.map((template) => (
             <li key={template._id}>
               {template.title} - {template.workerName}
+              <button onClick={() => onRemoveFromExport(template._id)}>Remove</button>
             </li>
           ))
         )}
       </ul>
 
-      <button onClick={generateDocx} disabled={templates.length === 0}>
+      <button onClick={generateDocx} disabled={selectedTemplates.length === 0}>
         Export to DOCX
       </button>
     </div>

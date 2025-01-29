@@ -69,15 +69,18 @@ export const removeTemplate = createAsyncThunk(
   }
 );
 
+
 // Initial state
 interface TemplateState {
   templates: Template[];
+  selectedTemplates: Template[]; // Store the selected templates here
   loading: boolean;
   error: string | null;
 }
 
 const initialState: TemplateState = {
   templates: [],
+  selectedTemplates: [], // Initialize as an empty array
   loading: false,
   error: null,
 };
@@ -92,6 +95,13 @@ const templateSlice = createSlice({
       state.error = null;
       state.templates = [];
     },
+    addTemplateToExport: (state, action) => {
+      const templateToAdd = action.payload;
+      if (!state.selectedTemplates.some(template => template._id === templateToAdd._id)) {
+        state.selectedTemplates.push(templateToAdd); // Add template if not already in the array
+      }
+    },
+
   },
   extraReducers: (builder) => {
     builder
@@ -158,5 +168,7 @@ const templateSlice = createSlice({
       });
   },
 });
+
+export const { addTemplateToExport } = templateSlice.actions;
 
 export default templateSlice.reducer;
