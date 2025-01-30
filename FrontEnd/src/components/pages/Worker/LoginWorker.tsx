@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginWorker } from '../../../features/worker/workerSlicer';
 import { useNavigate } from 'react-router-dom';  // Import the useNavigate hook
 import { RootState, AppDispatch } from '../../../app/store'
-
+import { Link } from 'react-router-dom';  // Import the Link component
 
 const LoginWorker = () => {
   const [loginEmail, setLoginEmail] = useState('');
@@ -64,6 +64,11 @@ const LoginWorker = () => {
       </form>
 
       {token && !error && <p style={{ color: 'green' }}>You are logged in!</p>}
+
+      {/* Add the Register link here */}
+      <p>
+        Don't have an account? <Link to="/register-worker">Register here</Link>
+      </p>
     </div>
   );
 };
