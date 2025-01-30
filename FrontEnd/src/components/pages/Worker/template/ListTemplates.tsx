@@ -34,7 +34,20 @@ const ListTemplate: React.FC<Props> = ({ selectedCategoryId }) => {
 
   const handleContentChange = (key: string, value: any) => {
     if (editedData) {
-      setEditedData((prev) => (prev ? { ...prev, content: { ...prev.content, [key]: value } } : prev));
+      setEditedData((prev) => {
+        if (prev) {
+          if (typeof prev.content === 'object' && prev.content !== null) {
+            return {
+              ...prev,
+              content: { ...prev.content, [key]: value }
+            };
+          } else {
+            return prev;
+          }
+        }
+        return prev;
+      });
+      
     }
   };
 
