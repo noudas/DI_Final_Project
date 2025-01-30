@@ -4,7 +4,8 @@ import { Input } from '../../generics/Input';    // Importing your generic Input
 import { Label } from '../../generics/Label';    // Importing your generic Label
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../../features/user/userSlicer';  // Assuming you have the registerUser action
-import { RootState } from '../../../app/store'
+import { RootState, AppDispatch } from '../../../app/store'
+
 
 // Define the state type for the form
 interface RegisterFormData {
@@ -17,7 +18,7 @@ interface RegisterFormData {
   }
   
   const RegisterUser: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch(); 
     const [formData, setFormData] = useState<RegisterFormData>({
       username: '',
       email: '',

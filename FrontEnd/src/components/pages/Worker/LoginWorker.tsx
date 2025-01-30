@@ -4,13 +4,13 @@ import { Label } from '../../generics/Label';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginWorker } from '../../../features/worker/workerSlicer';
 import { useNavigate } from 'react-router-dom';  // Import the useNavigate hook
-import { RootState } from '../../../app/store'
+import { RootState, AppDispatch } from '../../../app/store'
 
 
 const LoginWorker = () => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPass, setLoginPass] = useState('');
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch(); 
   const { loading, error, token } = useSelector((state: RootState) => state.workers);
 
   // Use navigate hook to programmatically navigate

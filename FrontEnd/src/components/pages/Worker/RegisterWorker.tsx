@@ -5,7 +5,7 @@ import { Label } from '../../generics/Label';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerWorker } from '../../../features/worker/workerSlicer';
 import { WorkerRole } from '../../../types/types';
-import { RootState } from '../../../app/store'
+import { AppDispatch, RootState } from '../../../app/store'
 
 interface RegisterFormData {
     username: string;
@@ -20,7 +20,7 @@ interface RegisterFormData {
   }
 
   const RegisterUser: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch(); 
     const [formData, setFormData] = useState<RegisterFormData>({
       username: '',
       email: '',
@@ -35,7 +35,7 @@ interface RegisterFormData {
   
     const { loading, error } = useSelector((state: RootState) => state.workers);
   
-    const handleChange = (name: keyof RegisterFormData, value: string) => {
+    const handleChange = (name: keyof RegisterFormData, value: string | number | undefined) => {
       setFormData((prevState) => ({
         ...prevState,
         [name]: value,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCategories, createCategory } from '../../../../features/categories/categoriesSlice';
-import { RootState } from '../../../../app/store';
+import { AppDispatch, RootState } from '../../../../app/store';
 import { Category } from '../../../../types/types';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const CategoriesComponent: React.FC<Props> = ({ onSelectCategory }) => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch(); 
   const { categories, status, error } = useSelector((state: RootState) => state.categories);
 
   const [newCategoryName, setNewCategoryName] = useState('');

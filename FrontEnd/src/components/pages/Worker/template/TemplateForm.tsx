@@ -156,8 +156,9 @@ export const TemplateForm: React.FC = () => {
           label="Worker ID"
           name="createdBy"
           value={selectedWorkerId || ''} // Bind the selected worker's ID here
-          readOnly
-        />
+          readOnly onChange={function (_name: keyof TemplateFormState): void {
+            throw new Error('Function not implemented.');
+          } }        />
       </div>
       <div>
         <Label<TemplateFormState> text="Content" htmlFor="content" />

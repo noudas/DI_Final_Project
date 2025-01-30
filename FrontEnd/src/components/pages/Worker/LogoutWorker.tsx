@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // To handle navigation
 import { logoutWorker } from '../../../features/worker/workerSlicer'; // You might need to create this action
+import { AppDispatch } from '../../../app/store';
 
 const LogoutWork = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch(); 
   const navigate = useNavigate();
 
   useEffect(() => {
