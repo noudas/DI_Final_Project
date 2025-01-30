@@ -33,7 +33,7 @@ interface RegisterFormData {
       experienceYears: undefined,
     });
   
-    const { loading, error, token } = useSelector((state: RootState) => state.workers);
+    const { loading, error } = useSelector((state: RootState) => state.workers);
   
     const handleChange = (name: keyof RegisterFormData, value: string) => {
       setFormData((prevState) => ({

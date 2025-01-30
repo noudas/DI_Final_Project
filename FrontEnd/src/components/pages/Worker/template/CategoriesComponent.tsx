@@ -37,6 +37,7 @@ const CategoriesComponent: React.FC<Props> = ({ onSelectCategory }) => {
       const newCategory: Omit<Category, 'id'> = {
         name: newCategoryName.trim(),
         description: newCategoryDescription.trim(),
+        _id: ''
       };
 
       try {

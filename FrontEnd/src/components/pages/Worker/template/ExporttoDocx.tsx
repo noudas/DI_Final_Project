@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import { saveAs } from "file-saver";
+import { Template } from "../../../../types/types";
 
 interface Props {
   templates: Template[];

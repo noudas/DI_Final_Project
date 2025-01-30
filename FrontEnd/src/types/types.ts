@@ -1,5 +1,7 @@
 //src/types/types.js
 
+import { Key } from "react";
+
 // Enums
 export enum WorkerRole {
     Nutritionist = 'nutritionist',
@@ -18,6 +20,7 @@ export interface User {
 
 // Worker Interface (Extends User)
 export interface Worker extends User {
+    id: Key | null | undefined;
     role: WorkerRole;
     specialty: string;
     experienceYears?: number;
@@ -25,6 +28,7 @@ export interface Worker extends User {
 
 // Category Interface
 export interface Category {
+    id: Key | null | undefined;
     _id: string;
     name: string;
     description?: string;

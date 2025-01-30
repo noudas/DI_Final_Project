@@ -3,9 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../../app/store";
 import { fetchTemplates, updateTemplate, removeTemplate } from "../../../../features/template/templateSlicer";
 import ExportToDocx from "./ExporttoDocx";
+import { Template } from "../../../../types/types";
 
 interface Props {
-  selectedCategoryId?: string;
+  selectedCategoryId?: string | null;
 }
 
 const ListTemplate: React.FC<Props> = ({ selectedCategoryId }) => {

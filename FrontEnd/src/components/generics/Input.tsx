@@ -30,6 +30,7 @@ interface InputProps<T extends Record<string, any>> {
   value: T[keyof T];
   onChange: (name: keyof T, value: T[keyof T]) => void;
   required?: boolean;
+  readOnly?: boolean;
 }
 
 /**
@@ -45,6 +46,7 @@ export const Input = <T extends Record<string, any>>({
   value,
   onChange,
   required = false,
+  readOnly = false
 }: InputProps<T>) => {
   return (
     <div>
@@ -57,6 +59,7 @@ export const Input = <T extends Record<string, any>>({
         value={value as string}
         onChange={(e) => onChange(name, e.target.value as T[keyof T])}
         required={required}
+        readOnly={readOnly}
       />
     </div>
   );

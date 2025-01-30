@@ -27,7 +27,7 @@ interface RegisterFormData {
       lastName: '',
     });
   
-    const { loading, error, token } = useSelector((state: RootState) => state.users);
+    const { loading, error } = useSelector((state: RootState) => state.users);
   
     const handleChange = (name: keyof RegisterFormData, value: string) => {
       setFormData((prevState) => ({

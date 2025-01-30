@@ -37,7 +37,7 @@ const LoginUser = () => {
             label="Email"
             name="email"
             value={loginEmail}
-            onChange={(name, value) => setLoginEmail(value)}
+            onChange={(_name, value) => setLoginEmail(value)}
           />
         </div>
         <div>
@@ -47,7 +47,7 @@ const LoginUser = () => {
             name="password"
             type="password"
             value={loginPass}
-            onChange={(name, value) => setLoginPass(value)}
+            onChange={(_name, value) => setLoginPass(value)}
           />
         </div>
         <button type="submit" disabled={loading}>
