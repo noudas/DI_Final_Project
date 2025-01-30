@@ -4,6 +4,7 @@ import { Input } from '../../generics/Input';    // Importing your generic Input
 import { Label } from '../../generics/Label';    // Importing your generic Label
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../../features/user/userSlicer';  // Assuming you have the registerUser action
+import { RootState } from '../../../app/store'
 
 // Define the state type for the form
 interface RegisterFormData {
@@ -26,7 +27,7 @@ interface RegisterFormData {
       lastName: '',
     });
   
-    const { users, loading, error } = useSelector((state) => state.users);
+    const { loading, error, token } = useSelector((state: RootState) => state.users);
   
     const handleChange = (name: keyof RegisterFormData, value: string) => {
       setFormData((prevState) => ({

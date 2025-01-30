@@ -7,17 +7,32 @@ const apiClient = axios.create({
   },
 });
 
-// Add interceptors if needed for handling tokens or errors
+// Adiciona o token ao header de cada requisição
 apiClient.interceptors.request.use(
   (config) => {
-    // Example: Attach token if available
-    const token = localStorage.getItem('authToken');
-    if (token) {
+    const token = localStorage.getItem('authToken'); // Para React Web
+    if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Interceptor para lidar com erros globais
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      // Exemplo: Se o token for inválido ou expirado
+      if (error.response.status === 401) {
+        console.error('Erro 401: Token inválido ou expirado');
+        localStorage.removeItem('authToken'); // Para React Web
+        window.location.href = '/login'; // Redireciona para login
+      }
+    }
+    return Promise.reject(error);
+  }
 );
 
 export default apiClient;

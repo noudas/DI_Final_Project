@@ -5,6 +5,7 @@ import { Label } from '../../generics/Label';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerWorker } from '../../../features/worker/workerSlicer';
 import { WorkerRole } from '../../../types/types';
+import { RootState } from '../../../app/store'
 
 interface RegisterFormData {
     username: string;
@@ -32,7 +33,7 @@ interface RegisterFormData {
       experienceYears: undefined,
     });
   
-    const { workers, loading, error } = useSelector((state) => state.workers);
+    const { loading, error, token } = useSelector((state: RootState) => state.workers);
   
     const handleChange = (name: keyof RegisterFormData, value: string) => {
       setFormData((prevState) => ({

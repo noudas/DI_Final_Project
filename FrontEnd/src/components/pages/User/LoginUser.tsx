@@ -3,12 +3,13 @@ import { Input } from '../../generics/Input';
 import { Label } from '../../generics/Label';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../../features/user/userSlicer';
+import { RootState } from '../../../app/store'
 
 const LoginUser = () => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPass, setLoginPass] = useState('');
   const dispatch = useDispatch();
-  const { loading, error, token } = useSelector((state) => state.users);
+  const { loading, error, token } = useSelector((state: RootState) => state.users);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
