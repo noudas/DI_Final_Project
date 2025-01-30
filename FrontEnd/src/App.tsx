@@ -36,7 +36,7 @@ const App: React.FC = () => {
           <Route path="/template-manager" element={<TemplateManager />} />
 
           {/* Default route */}
-          <Route path="/" element={<h1>Welcome to the Template App!</h1>} />
+          <Route path="/" element={<><h1>Welcome to the Template App!</h1><LoginWorker /></>} />
         </Routes>
       </div>
     </Router>
