@@ -13,7 +13,7 @@ import UserNavbar from './components/Navbar/UserNavbar';  // Create this compone
 import WorkerNavbar from './components/Navbar/WorkerNavbar';  // Create this component
 
 const App: React.FC = () => {
-  const [userRole, setUserRole] = useState<string | null>(null); // 'user' or 'worker'
+  const [userRole] = useState<string | null>(null); // 'user' or 'worker'
 
   return (
     <Router>

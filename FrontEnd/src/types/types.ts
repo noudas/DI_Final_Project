@@ -8,7 +8,7 @@ export enum WorkerRole {
 
 // User Interface
 export interface User {
-    id: string;
+    _id: string;
     username: string;
     email: string;
     password: string;
@@ -25,7 +25,7 @@ export interface Worker extends User {
 
 // Category Interface
 export interface Category {
-    id: string;
+    _id: string;
     name: string;
     description?: string;
 }
@@ -38,7 +38,7 @@ export interface ContextWord {
 
 // Context Interface
 export interface Context {
-    id: string;
+    _id: string;
     name: string;
     description?: string;
     words: ContextWord[];
@@ -49,7 +49,7 @@ export type TemplateContent = string | Record<string, any>;
 
 // Template Interface
 export interface Template {
-    id: string;
+    _id: string;
     title: string;
     workerName: string;
     createdBy: string;

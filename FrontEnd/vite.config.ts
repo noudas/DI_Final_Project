@@ -8,6 +8,7 @@ export default defineConfig({
   },
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' }, // Ignora certos erros
-  },
+    logLevel: 'silent',
+  },  
   plugins: [react()],
 })

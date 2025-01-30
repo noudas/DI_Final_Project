@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../../app/store";
 import { fetchTemplates, updateTemplate, removeTemplate } from "../../../../features/template/templateSlicer";
-import ExportToDocx from "./ExportToDocx";
+import ExportToDocx from "./ExporttoDocx";
 
 interface Props {
   selectedCategoryId?: string;

@@ -136,7 +136,7 @@ const workerSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerWorker.fulfilled, (state, action) => {
+      .addCase(registerWorker.fulfilled, (state) => {
         state.loading = false;
         state.error = null; // reset error if registration is successful
       })
